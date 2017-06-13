@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <NTL/GF2X.h>
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
 NTL_CLIENT
 
 vector<int> printDivisors(int n){
@@ -13,7 +13,6 @@ vector<int> printDivisors(int n){
 }
 
 int main(int argc, char** argv) {
-	
 	int n;
 	
 	cout << "Zadajte vstupne cislo n: ";
