@@ -4,6 +4,9 @@
 #include <NTL/ZZ_pX.h>
 #include <NTL/ZZ_pXFactoring.h>
 #include <conio.h>
+#include <cstring>
+#include <string>
+#include <sstream>
 
 NTL_CLIENT
 
@@ -111,6 +114,21 @@ ZZ_pX polynomialQ(ZZ n){
     return polyQ;
 }
 
+string prettyPoly(ZZ_pX poly){
+	std::ostringstream s;
+	for(int i=deg(poly); i>1; i--){
+		
+		if(coeff(poly,i) == 1){
+			s << "x^" << i << " + ";
+		}	
+	}
+	if(coeff(poly,1)==1)
+		s<<"x + ";
+	if(coeff(poly,0)==1)
+		s<<"1 + ";
+	return s.str().substr(0, s.str().size()-3);	
+}
+
 int main(){
 	cout<<"******************************************************"<<endl;
 	cout<<"*                                                    *"<<endl;
@@ -147,7 +165,7 @@ int main(){
 	    cin>>index;
 	
 		SetCoeff(poly,index);
-		cout << endl << poly << endl;
+		cout << endl << prettyPoly(poly) << endl;
 	
 		degree=deg(poly);
 		
