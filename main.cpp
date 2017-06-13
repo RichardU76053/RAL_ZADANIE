@@ -169,69 +169,63 @@ int main(){
 		ZZ_p::init(p);
 		SetCoeff(poly,0,-1);
 	
-		cout << endl << "Zadaj 'n' pre polynom v tvare x^n - 1 : ";
+		cout << endl << "Zadaj 'n' pre polynom f(x) = x^n - 1 : ";
 	    cin>>index;
 	
 		SetCoeff(poly,index);
-		cout << endl << prettyPoly(poly) << endl;
+		cout << endl << "f(x) = x^"<< index << " - 1" << endl;
 	
 		degree=deg(poly);
 		
-		cout << endl << "Stupen polynomu deg f = " << degree << endl; 
-		
-		/*
-		cout<<"V prvom kroku sa treba pozriet ci najvyssi stupen polynomu je nesudelitelny s p!"<<endl;
-		cout<<"\t"<<"a) V pripade sudelitelnosti polynom rozlozime na tvar '(x^k-1)^l',"<<endl;
-		cout<<"\t   "<<"pricom plati ze k*l=n a zaroven GCD(p,k)=1!"<<endl;
-		cout<<"\t"<<"b) V pripade nesudelitelnosti pokracujeme s druhym krokom!"<<endl<<endl;
-		*/
+		cout << endl << "Stupen polynomu deg f(x) = " << degree << endl; 
 		
 		int gcd_deg_p = GCD(degree,to_long(p));
-		cout << endl << "GCD(deg f,2) = " << gcd_deg_p << endl; 
+		cout << endl << "GCD(deg f(x),2) = " << gcd_deg_p << endl; 
 		
 		if(GCD(degree,to_long(p))!=1){
 			while(GCD(degree,to_long(p))!=1){
 				degree/=to_long(p);
 			}
 			SetCoeff(F,0,-1);
-			SetCoeff(F,degree);	
-			cout<<endl<<"Po zjednoduseni je polynom v tvare : "<<endl;
-			cout<<endl<<F<<endl<<"s najvyssim stupnom deg f = "<<degree<<" lebo GCD(deg f, 2) musi byt rovne 1!"<<endl<<endl;
+			SetCoeff(F,degree);	 
+			cout<<endl<<"Po zjednoduseni je polynom f(x) v tvare f(x) = ";
+			cout << prettyPoly(F) <<endl<<"s najvyssim stupnom deg f(x) = "<<degree<<" lebo GCD(deg f(x), 2) musi byt rovne 1!"<<endl;
 		}else
 			F=poly;
-	
+		cout << "-----------------------------------" << endl;
 	    CanZass(factors,F,0);
-		cout<<"Faktory polynomu su:";
+		cout<<"Rozklad f(x) na ireducibilne faktory : ";
 		cout<<prettyFactors(factors)<<endl;
-	     
-		cout<<"V druhom kroku najdeme vsetky delitele cisla n!"<<endl;
-		cout<<"\t"<<"Pre vsetky delitele 'd' plati ze x^n-1 = \343 Q_d,"<<endl;
-		cout<<"\t"<<"kde Q_n = \343 (x^d-1)^(\346(n/d))!"<<endl;
-		cout<<"\t"<<"a \346(n) je mobiova funkcia, ktora moze nadobudnut hodnoty:"<<endl; 
-		cout<<"\t"<<"1,-1 a 0 v zavislosti od vstupnej hodnoty 'n'."<<endl<<endl;
-		cout<<"Aplikovanim hore uvedenych rovnic na vsetky Q_n dostaneme: "<<endl<<endl;
-	
+		
 		div=numberDecomposition(to_ZZ(degree));
 	    lenVec=div.length();
 	    
+	    cout << "-----------------------------------" << endl;
+	    cout<<"Rozklad f(x) na cyklotomicke polynomy : f(x) = ";
+	    for(long i = 1;i < lenVec; i++){
+	    	if(i != lenVec - 1)
+				cout <<	"Q_" << div(i) << "(x) * ";
+			else
+				cout <<	"Q_" << div(i) << "(x)" << endl;
+		}
+		
 		for(long i=lenVec;i>=1;i--){
 			factors.kill();
-			cout<<"Polynom Q indexom "<<div(i)<<" je: "<<endl;
-			cout<<prettyPoly(polynomialQ(div(i)))<<" = "<<endl;
-			cout<<" = ";
-	
+			cout<<endl<<"Q_"<<div(i)<<"(x) = ";
+			cout<<prettyPoly(polynomialQ(div(i)))<<" = ";
 			CanZass(factors,polynomialQ(div(i)),0);
-	
-			cout<<prettyFactors(factors)<<endl;
-			cout<<"kde 'rad "<<p<<"' modulo "<<div(i)<<" \360 "<<ord(div(i),p);
-	        cout<<endl<<endl;
-			}
-	
+			cout<<prettyFactors(factors);
+			//cout<<"kde 'rad "<<p<<"' modulo "<<div(i)<<" \360 "<<ord(div(i),p);
+	        //cout<<endl<<endl;
+		}
+		
+		/*
 		cout<<"kde hore vypocitane rady udavaju stupne ireducibilnych polynomov danych 'Q_n' !"<<endl<<endl;
 		cout<<"***************************************";
 	    cout<<"***************************************";
-		cout<<endl<<endl;
-		cout<<"Na ukoncenie zadaj '<exit>' inak '<cont>' !"<<endl;
+		cout<<endl<<endl;*/
+		
+		cout<<endl<<endl<<"Na ukoncenie zadaj '<exit>' inak '<cont>' !"<<endl;
 	
 		cin>>exit;
 	}
