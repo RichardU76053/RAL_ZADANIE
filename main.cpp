@@ -7,6 +7,7 @@
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <map>
 
 NTL_CLIENT
 
@@ -116,11 +117,15 @@ ZZ_pX polynomialQ(ZZ n){
 
 string prettyPoly(ZZ_pX poly){
 	std::ostringstream s;
+	int counter = 1;
 	for(int i=deg(poly); i>1; i--){
-		
 		if(coeff(poly,i) == 1){
-			s << "x^" << i << " + ";
-		}	
+			//if(counter%9 == 0)
+			//	s << "x^" << i << " + "<<endl;
+			//else
+				s << "x^" << i << " + ";
+		}
+		counter++;	
 	}
 	if(coeff(poly,1)==1)
 		s<<"x + ";
@@ -132,9 +137,28 @@ string prettyPoly(ZZ_pX poly){
 string prettyFactors(vec_pair_ZZ_pX_long factors){
 	std::ostringstream s;
 	for(int i=0; i<factors.length(); i++){
-		s<<"("<<prettyPoly(factors[i].a)<<") * ";
+			//if(i%3 == 0)
+			//	s<<"("<<prettyPoly(factors[i].a)<<") * "<<endl;
+			//else
+				s<<"("<<prettyPoly(factors[i].a)<<") * ";
 	}
 	return s.str().substr(0, s.str().size()-3);	
+}
+
+ZZ gcd(ZZ a, ZZ b){
+    if (a == 0)
+        return b;
+    return gcd(b%a, a);
+}
+
+ZZ phi(ZZ n){
+    ZZ result;
+	result = 1;
+	ZZ i;
+    for (i=2; i < n; i++)
+        if (gcd(i, n) == 1)
+            result++;
+    return result;
 }
 
 int main(){
@@ -148,10 +172,11 @@ int main(){
 	cout<<"-----------------------------------"<<endl;
 	cout<<"Zadanie : "<<endl;
 	cout<<"Vstup - cislo n"<<endl;
-	cout<<"Vystup - rozklad x^n - 1 na cyklotomicke"<<endl;
-	cout<<"polynomy, rozklad x^n - 1 na ireducibilne faktory, tabulka s "<<endl;
-	cout<<"poctami ireducibilnych polynomov jednotlivych stupnov v tomto rozklade"<<endl;
-	
+	cout<<"Vystup - rozklad x^n - 1 na cyklotomicke polynomy,"<<endl;
+	cout<<"rozklad x^n - 1 na ireducibilne faktory, tabulka s "<<endl;
+	cout<<"poctami ireducibilnych polynomov jednotlivych stup-"<<endl;
+	cout<<"nov v tomto rozklade"<<endl;
+	cout<<endl<<"-----------------------------------"<<endl;
 	char exit[10];
 	long degree,index,lenVec;
 	
@@ -169,7 +194,7 @@ int main(){
 		ZZ_p::init(p);
 		SetCoeff(poly,0,-1);
 	
-		cout << endl << "Zadaj 'n' pre polynom f(x) = x^n - 1 : ";
+		cout << "Zadaj 'n' pre polynom f(x) = x^n - 1 : ";
 	    cin>>index;
 	
 		SetCoeff(poly,index);
@@ -189,12 +214,12 @@ int main(){
 			SetCoeff(F,0,-1);
 			SetCoeff(F,degree);	 
 			cout<<endl<<"Po zjednoduseni je polynom f(x) v tvare f(x) = ";
-			cout << prettyPoly(F) <<endl<<"s najvyssim stupnom deg f(x) = "<<degree<<" lebo GCD(deg f(x), 2) musi byt rovne 1!"<<endl;
+			cout << "x^" << degree << " - 1"<<endl<<"s najvyssim stupnom deg f(x) = "<<degree<<" lebo GCD(deg f(x), 2) musi byt rovne 1!"<<endl;
 		}else
 			F=poly;
 		cout << "-----------------------------------" << endl;
 	    CanZass(factors,F,0);
-		cout<<"Rozklad f(x) na ireducibilne faktory : ";
+		cout<<"Rozklad f(x) na ireducibilne faktory : f(x) = ";
 		cout<<prettyFactors(factors)<<endl;
 		
 		div=numberDecomposition(to_ZZ(degree));
@@ -202,22 +227,36 @@ int main(){
 	    
 	    cout << "-----------------------------------" << endl;
 	    cout<<"Rozklad f(x) na cyklotomicke polynomy : f(x) = ";
-	    for(long i = 1;i < lenVec; i++){
-	    	if(i != lenVec - 1)
+	    for(long i = 1;i <= lenVec; i++){
+	    	if(i != lenVec)
 				cout <<	"Q_" << div(i) << "(x) * ";
 			else
 				cout <<	"Q_" << div(i) << "(x)" << endl;
 		}
 		
+		map<ZZ,ZZ*> tmp;
+		
 		for(long i=lenVec;i>=1;i--){
 			factors.kill();
-			cout<<endl<<"Q_"<<div(i)<<"(x) = ";
+			cout<<endl<<endl<<"Q_"<<div(i)<<"(x) = ";
 			cout<<prettyPoly(polynomialQ(div(i)))<<" = ";
 			CanZass(factors,polynomialQ(div(i)),0);
 			cout<<prettyFactors(factors);
-			//cout<<"kde 'rad "<<p<<"' modulo "<<div(i)<<" \360 "<<ord(div(i),p);
+			ZZ* pole = new ZZ[2];
+			pole[0] = phi(div(i));
+			pole[1] =ord(div(i),p);
+			tmp[div(i)] = pole;
+			//cout<<endl<<"kde 'rad "<<p<<"' modulo "<<div(i)<<" \360 "<<ord(div(i),p);
 	        //cout<<endl<<endl;
 		}
+		
+		cout<<endl<<endl;
+		for (map<ZZ,ZZ*>::iterator it=tmp.begin(); it!=tmp.end(); ++it){
+    		cout << it->first << " => ";
+			ZZ* pole = it->second;
+			cout << "<" << pole[0] << ",";
+			cout << pole[1] << ">" << endl;
+    	}
 		
 		/*
 		cout<<"kde hore vypocitane rady udavaju stupne ireducibilnych polynomov danych 'Q_n' !"<<endl<<endl;
