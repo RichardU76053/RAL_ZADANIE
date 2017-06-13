@@ -129,6 +129,14 @@ string prettyPoly(ZZ_pX poly){
 	return s.str().substr(0, s.str().size()-3);	
 }
 
+string prettyFactors(vec_pair_ZZ_pX_long factors){
+	std::ostringstream s;
+	for(int i=0; i<factors.length(); i++){
+		s<<"("<<prettyPoly(factors[i].a)<<") * ";
+	}
+	return s.str().substr(0, s.str().size()-3);	
+}
+
 int main(){
 	cout<<"******************************************************"<<endl;
 	cout<<"*                                                    *"<<endl;
@@ -194,7 +202,7 @@ int main(){
 	
 	    CanZass(factors,F,0);
 		cout<<"Faktory polynomu su:";
-		cout<<factors<<endl;
+		cout<<prettyFactors(factors)<<endl;
 	     
 		cout<<"V druhom kroku najdeme vsetky delitele cisla n!"<<endl;
 		cout<<"\t"<<"Pre vsetky delitele 'd' plati ze x^n-1 = \343 Q_d,"<<endl;
@@ -209,12 +217,12 @@ int main(){
 		for(long i=lenVec;i>=1;i--){
 			factors.kill();
 			cout<<"Polynom Q indexom "<<div(i)<<" je: "<<endl;
-			cout<<polynomialQ(div(i))<<" = "<<endl;
+			cout<<prettyPoly(polynomialQ(div(i)))<<" = "<<endl;
 			cout<<" = ";
 	
 			CanZass(factors,polynomialQ(div(i)),0);
 	
-			cout<<factors<<endl;
+			cout<<prettyFactors(factors)<<endl;
 			cout<<"kde 'rad "<<p<<"' modulo "<<div(i)<<" \360 "<<ord(div(i),p);
 	        cout<<endl<<endl;
 			}
