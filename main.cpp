@@ -120,9 +120,9 @@ string prettyPoly(ZZ_pX poly){
 	int counter = 1;
 	for(int i=deg(poly); i>1; i--){
 		if(coeff(poly,i) == 1){
-			//if(counter%9 == 0)
-			//	s << "x^" << i << " + "<<endl;
-			//else
+			if(counter%9 == 0)
+				s << "x^" << i << " + " << endl << " + ";
+			else
 				s << "x^" << i << " + ";
 		}
 		counter++;	
@@ -136,11 +136,13 @@ string prettyPoly(ZZ_pX poly){
 
 string prettyFactors(vec_pair_ZZ_pX_long factors){
 	std::ostringstream s;
-	for(int i=0; i<factors.length(); i++){
-			//if(i%3 == 0)
-			//	s<<"("<<prettyPoly(factors[i].a)<<") * "<<endl;
-			//else
+	if(factors.length()>0){
+		s<<"("<<prettyPoly(factors[0].a)<<") * ";
+		for(int i=1; i<factors.length(); i++){
+				if(i%3 == 0)
+					s << endl << " * ";	
 				s<<"("<<prettyPoly(factors[i].a)<<") * ";
+		}
 	}
 	return s.str().substr(0, s.str().size()-3);	
 }
@@ -219,14 +221,14 @@ int main(){
 			F=poly;
 		cout << "-----------------------------------" << endl;
 	    CanZass(factors,F,0);
-		cout<<"Rozklad f(x) na ireducibilne faktory : f(x) = ";
+		cout<<"Rozklad f(x) na ireducibilne faktory : "<<endl<<"f(x) = ";
 		cout<<prettyFactors(factors)<<endl;
 		
 		div=numberDecomposition(to_ZZ(degree));
 	    lenVec=div.length();
 	    
 	    cout << "-----------------------------------" << endl;
-	    cout<<"Rozklad f(x) na cyklotomicke polynomy : f(x) = ";
+	    cout<<"Rozklad f(x) na cyklotomicke polynomy : "<<endl<<"f(x) = ";
 	    for(long i = 1;i <= lenVec; i++){
 	    	if(i != lenVec)
 				cout <<	"Q_" << div(i) << "(x) * ";
@@ -239,7 +241,7 @@ int main(){
 		for(long i=lenVec;i>=1;i--){
 			factors.kill();
 			cout<<endl<<endl<<"Q_"<<div(i)<<"(x) = ";
-			cout<<prettyPoly(polynomialQ(div(i)))<<" = ";
+			cout<<prettyPoly(polynomialQ(div(i)))<<" = "<<endl<<" = ";
 			CanZass(factors,polynomialQ(div(i)),0);
 			cout<<prettyFactors(factors);
 			ZZ* pole = new ZZ[2];
