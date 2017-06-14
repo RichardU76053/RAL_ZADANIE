@@ -163,6 +163,15 @@ ZZ phi(ZZ n){
     return result;
 }
 
+	string pickWord(ZZ cislo){
+		if (cislo == 1)
+			return "polynom";
+		else if(cislo == 2 || cislo == 3 || cislo == 4)
+			return "polynomy";
+		else
+			return "polynomov";
+	}
+
 int main(){
 	cout<<"******************************************************"<<endl;
 	cout<<"*                                                    *"<<endl;
@@ -188,7 +197,7 @@ int main(){
 	vec_ZZ_p x;
 	vec_ZZ div;
 	
-	while(strcmp(exit,"<exit>")!=0){
+	while(strcmp(exit,"0")!=0){
 		clear(poly);
 		clear(F);
 		p = 2;
@@ -233,7 +242,7 @@ int main(){
 	    	if(i != lenVec)
 				cout <<	"Q_" << div(i) << "(x) * ";
 			else
-				cout <<	"Q_" << div(i) << "(x)" << endl;
+				cout <<	"Q_" << div(i) << "(x)";
 		}
 		
 		map<ZZ,ZZ*> tmp;
@@ -248,25 +257,22 @@ int main(){
 			pole[0] = phi(div(i));
 			pole[1] =ord(div(i),p);
 			tmp[div(i)] = pole;
-			//cout<<endl<<"kde 'rad "<<p<<"' modulo "<<div(i)<<" \360 "<<ord(div(i),p);
-	        //cout<<endl<<endl;
 		}
-		
 		cout<<endl<<endl;
+		cout << "-----------------------------------" << endl << endl << "Tabulka:" << endl;
+		cout << "----------------------------------------------------------------------" << endl;
+		cout << "|Q_d\t" << "|Phi(d)\t" << "|Ord 2 (mod d)\t" << "|Pocet polynomov jednotlyvych stupnov"<< endl; 
+		cout << "----------------------------------------------------------------------" << endl;
 		for (map<ZZ,ZZ*>::iterator it=tmp.begin(); it!=tmp.end(); ++it){
-    		cout << it->first << " => ";
 			ZZ* pole = it->second;
-			cout << "<" << pole[0] << ",";
-			cout << pole[1] << ">" << endl;
+			ZZ pocet = (pole[0]/pole[1]);
+			cout << "|Q_"<< it->first <<"\t" << "|" << pole[0] << "\t" << "|" << pole[1] << "\t\t";
+			cout << "|" << pocet << " " << pickWord(pocet) << " stupna "<< pole[1] << endl;
+			cout << "----------------------------------------------------------------------" << endl;
     	}
 		
-		/*
-		cout<<"kde hore vypocitane rady udavaju stupne ireducibilnych polynomov danych 'Q_n' !"<<endl<<endl;
-		cout<<"***************************************";
-	    cout<<"***************************************";
-		cout<<endl<<endl;*/
 		
-		cout<<endl<<endl<<"Na ukoncenie zadaj '<exit>' inak '<cont>' !"<<endl;
+		cout<<endl<<endl<<"Pre ukoncenie programu zadajte '0', pre dalsie vypocty zadajte '1' !"<<endl;
 	
 		cin>>exit;
 	}
